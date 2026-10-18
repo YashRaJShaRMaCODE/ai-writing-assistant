@@ -22,7 +22,7 @@ function App() {
       setResult(res.data.result);
     } catch (error) {
       console.error(error);
-      setResult("Error connecting to API");
+      setResult(error.response?.data?.error || "Error connecting to API");
     } finally {
       setLoading(false);
     }
