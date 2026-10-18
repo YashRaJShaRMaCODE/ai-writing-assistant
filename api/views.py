@@ -24,8 +24,10 @@ def rewrite_text(request):
     try:
         r = requests.post(GEMINI_URL, params={"key": key}, timeout=30,
                           json={"contents": [{"parts": [{"text": prompt}]}]})
-        r.raise_for_status()
+        if not r.ok:
+            msg = r.json().get("error", {}).get("message", "") if "json" in r.headers.get("content-type", "") else ""
+            return Response({"error": f"AI service error {r.status_code}: {msg[:200]}"}, status=502)
         output = r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
-    except (requests.RequestException, KeyError, IndexError):
+    except (requests.RequestException, KeyError, IndexError, ValueError):
         return Response({"error": "AI service failed, try again"}, status=502)
     return Response({"result": output})
