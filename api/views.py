@@ -4,7 +4,7 @@ import requests
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent"
 PROMPTS = {
     "rewrite": "Rewrite the following text so it is clear, correct and natural. Keep the meaning. Return only the rewritten text.",
     "summarise": "Summarize the following text in 2-3 short sentences. Return only the summary.",
