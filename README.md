@@ -1,178 +1,69 @@
-# AI Writing Assistant
+# Clear Writing
 
-A full-stack web application that allows users to submit text and receive rewritten or summarized content through a REST API.
+A small writing workspace for professional drafts. It can rewrite a passage while keeping its meaning or summarise it in a few sentences. Text is processed by Google Gemini and is not stored by this application.
 
-## Features
+## Data and usage notice
 
-* Rewrite text
-* Summarize text
-* Django REST API backend
-* React (Vite) frontend
-* REST-based communication between frontend and backend
-* Loading state and result display
+This prototype is for adults (18+) and professional use. Text submitted to the app is sent to Google Gemini. Avoid sensitive, confidential, or personal information. Google’s data-use terms differ between unpaid and paid API usage; unpaid service content may be used to improve Google products and may be reviewed by people. Read the [Gemini API terms](https://ai.google.dev/gemini-api/terms) before handling user content.
 
-## Tech Stack
+The app has no accounts, user-level quotas, or billing controls yet. Its anonymous API limit is a basic abuse guard, not a commercial billing system. Add account-level controls and review provider terms, privacy requirements, and deployment security before offering this as a public paid product.
+
+## Stack
+
+- Django REST Framework backend
+- React + Vite frontend
+- Google Gemini `generateContent` API
+
+## Local setup
 
 ### Backend
 
-* Python
-* Django
-* Django REST Framework
-* SQLite
-
-### Frontend
-
-* React
-* Vite
-* Axios
-
-## Project Structure
-
-```text
-ai-writing-assistant/
-│
-├── backend/
-├── api/
-├── frontend/
-├── manage.py
-└── db.sqlite3
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
 ```
 
-## API Endpoint
-
-### Rewrite / Summarize
-
-```http
-POST /api/rewrite/
-```
-
-Request Body:
-
-```json
-{
-  "text": "Your text here",
-  "mode": "rewrite"
-}
-```
-
-or
-
-```json
-{
-  "text": "Your text here",
-  "mode": "summarise"
-}
-```
-
-Response:
-
-```json
-{
-  "result": "Generated output"
-}
-```
-
-## Local Setup
-
-### Clone Repository
+Generate a local Django key and add it to `.env`:
 
 ```bash
-git clone <repository-url>
-cd ai-writing-assistant
+python -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
-### Backend Setup
-
-Create virtual environment:
-
-```bash
-python -m venv venv
-```
-
-Activate virtual environment:
-
-Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-Install dependencies:
-
-```bash
-pip install django
-pip install djangorestframework
-pip install django-cors-headers
-pip install djangorestframework-simplejwt
-```
-
-Run migrations:
+Keep `DJANGO_DEBUG=true` only for local development. Add a Gemini key to `GEMINI_API_KEY` to enable AI requests. Then run:
 
 ```bash
 python manage.py migrate
-```
-
-Start backend server:
-
-```bash
+python manage.py check
+python manage.py test api
+python manage.py collectstatic --noinput
 python manage.py runserver
 ```
 
-Backend URL:
-
-```text
-http://127.0.0.1:8000
-```
-
-### Frontend Setup
-
-Move into frontend directory:
-
-```bash
-cd frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-npm install axios
-```
-
-Run development server:
-
-```bash
-npm run dev
-```
-
-Frontend URL:
-
-```text
-http://localhost:5173
-```
-
-## Environment Variables
-
-Currently no environment variables are required.
-
-If AI integration is added later:
-
-```env
-ANTHROPIC_API_KEY=your_api_key
-```
-
-## Deployment
-
-### Backend
-
-Render / Railway
+The API is available at `http://127.0.0.1:8000/api/rewrite/`. It accepts JSON with a `text` field (up to 5,000 characters) and `mode` set to `rewrite` or `summarise`. Requests are limited to 10 per hour per anonymous IP. The Gemini key stays on the backend and is sent in the `x-goog-api-key` header.
 
 ### Frontend
 
-Vercel
+```bash
+cd frontend
+npm ci
+npm run dev
+```
 
-## Author
+Vite serves the app at `http://localhost:5173`. Set `VITE_API_URL` in `frontend/.env.local` if the backend uses another address. Only put public configuration in Vite variables; they are included in browser code.
 
-Yash Raj Sharma
+Run frontend checks with:
 
-GitHub: YashRaJShaRMaCODE
+```bash
+npm run lint
+npm run build
+```
+
+## Production notes
+
+- Set a unique `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=false`, exact `DJANGO_ALLOWED_HOSTS`, and exact `CORS_ALLOWED_ORIGINS` values.
+- Serve over HTTPS. Set `SECURE_SSL_REDIRECT=true` only when the deployment is configured to serve HTTPS correctly. Enable HSTS after confirming the full domain and its subdomains use HTTPS.
+- Use a paid Gemini API project for any service handling user content, and verify the terms and privacy requirements for the intended audience and region.
+- Add user authentication, per-user quotas, billing controls, monitoring, and a privacy policy before public commercial use.
