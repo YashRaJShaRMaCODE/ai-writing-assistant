@@ -64,6 +64,7 @@ npm run build
 ## Production notes
 
 - Set a unique `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=false`, exact `DJANGO_ALLOWED_HOSTS`, and exact `CORS_ALLOWED_ORIGINS` values.
+- Set the frontend's public `VITE_API_URL` to the HTTPS origin of the deployed API. Production builds do not fall back to localhost.
 - Serve over HTTPS. Set `SECURE_SSL_REDIRECT=true` only when the deployment is configured to serve HTTPS correctly. Enable HSTS after confirming the full domain and its subdomains use HTTPS.
 - Use a paid Gemini API project for any service handling user content, and verify the terms and privacy requirements for the intended audience and region.
 - Add user authentication, per-user quotas, billing controls, monitoring, and a privacy policy before public commercial use.

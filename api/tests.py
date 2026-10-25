@@ -1,15 +1,31 @@
 import os
 from unittest.mock import Mock, patch
 
+from django.core.cache import cache
 from django.test import TestCase
 from rest_framework.test import APIClient
 
 
 class RewriteApiTests(TestCase):
     def setUp(self):
+        cache.clear()
         self.client = APIClient()
         self.url = "/api/rewrite/"
-        self.payload = {"text": "A short note.", "mode": "rewrite"}
+        self.payload = {
+            "text": "A short note.", "mode": "rewrite",
+            "adult_confirmed": True, "external_processing_confirmed": True,
+        }
+
+    def test_requires_both_confirmations_before_calling_gemini(self):
+        for key in ("adult_confirmed", "external_processing_confirmed"):
+            for value in (None, False, "true"):
+                payload = {**self.payload, key: value}
+                if value is None:
+                    payload.pop(key)
+                with patch("api.views.requests.post") as post:
+                    response = self.client.post(self.url, payload, format="json")
+                self.assertEqual(response.status_code, 400)
+                post.assert_not_called()
 
     def test_requires_text_and_valid_mode(self):
         self.assertEqual(self.client.post(self.url, {}, format="json").status_code, 400)

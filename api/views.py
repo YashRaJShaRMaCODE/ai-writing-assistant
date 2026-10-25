@@ -25,6 +25,8 @@ def rewrite_text(request):
         return Response({"error": f"Text must be {MAX_TEXT_LENGTH} characters or fewer"}, status=400)
     if not isinstance(mode, str) or mode not in PROMPTS:
         return Response({"error": "Mode must be rewrite or summarise"}, status=400)
+    if request.data.get("adult_confirmed") is not True or request.data.get("external_processing_confirmed") is not True:
+        return Response({"error": "Confirm you are 18+ and agree to send text to Google Gemini"}, status=400)
 
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
