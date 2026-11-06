@@ -42,7 +42,7 @@ python manage.py collectstatic --noinput
 python manage.py runserver
 ```
 
-The API is available at `http://127.0.0.1:8000/api/rewrite/`. It accepts JSON with a `text` field (up to 5,000 characters) and `mode` set to `rewrite` or `summarise`. Requests are limited to 10 per hour per anonymous IP. The Gemini key stays on the backend and is sent in the `x-goog-api-key` header.
+The API is available at `http://127.0.0.1:8000/api/rewrite/`; `/healthz/` reports whether the backend is reachable. It accepts JSON with a `text` field (up to 5,000 characters) and `mode` set to `rewrite` or `summarise`. Requests are limited to 10 per hour per anonymous IP. The Gemini key stays on the backend and is sent in the `x-goog-api-key` header.
 
 ### Frontend
 
