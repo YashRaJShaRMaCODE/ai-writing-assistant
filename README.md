@@ -2,7 +2,7 @@
 
 **A calmer workspace for finding the right words.** Rewrite a professional draft or summarise a longer note, then review, copy, download, or continue editing the result.
 
-- **Live app:** <https://clear-writing-workspace.onrender.com/>
+- **Live app:** <https://clear-writing-studio.onrender.com/>
 - **Backend health:** <https://ai-writing-assistant-xfbr.onrender.com/healthz/>
 
 ## Data and usage notice

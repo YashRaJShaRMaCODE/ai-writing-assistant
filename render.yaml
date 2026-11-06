@@ -16,7 +16,7 @@ services:
       - key: CORS_ALLOWED_ORIGINS
         sync: false
   - type: web
-    name: clear-writing-workspace
+    name: clear-writing-studio
     runtime: static
     branch: main
     autoDeploy: true
