@@ -18,6 +18,7 @@ The app has no accounts, user-level quotas, or billing controls yet. Its anonymo
 - Review results in place, copy or download them, or use one as the next draft.
 - Submit only after confirming you are 18+ and agreeing to send text to Google Gemini.
 - Keep provider API credentials on the backend; the browser receives only the service URL.
+- Protect the static frontend with a restrictive Content Security Policy and cache hashed assets for a year.
 
 ## Stack
 
@@ -79,6 +80,7 @@ The browser sends text to the backend only after the user selects **Rewrite** or
 The live frontend is a Render static site and the API is a separate Render web service. `render.yaml` documents both. Production settings:
 
 - Set a unique `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=false`, exact `DJANGO_ALLOWED_HOSTS`, and exact `CORS_ALLOWED_ORIGINS` values.
+- The static site applies a same-origin script/style policy, limits API connections to the configured backend, and denies framing.
 - Set the frontend's public `VITE_API_URL` to the HTTPS origin of the deployed API. It is compiled into browser code and must never contain a secret. Production builds do not fall back to localhost.
 - Set `CORS_ALLOWED_ORIGINS` on the API to the exact HTTPS origin of the live frontend.
 - Serve over HTTPS. Set `SECURE_SSL_REDIRECT=true` only when the deployment is configured to serve HTTPS correctly. Enable HSTS after confirming the full domain and its subdomains use HTTPS.

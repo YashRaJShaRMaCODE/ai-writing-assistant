@@ -26,6 +26,18 @@ services:
       - key: VITE_API_URL
         value: https://ai-writing-assistant-xfbr.onrender.com
     headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*
+        name: Content-Security-Policy
+        value: "default-src 'self'; base-uri 'self'; connect-src 'self' https://ai-writing-assistant-xfbr.onrender.com; font-src 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data: blob:; object-src 'none'; script-src 'self'; style-src 'self'; upgrade-insecure-requests"
+      - path: /*
+        name: Permissions-Policy
+        value: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+      - path: /*
+        name: Strict-Transport-Security
+        value: max-age=31536000
       - path: /*
         name: X-Content-Type-Options
         value: nosniff
