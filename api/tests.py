@@ -41,6 +41,14 @@ class RewriteApiTests(TestCase):
         response = self.client.post(self.url, {**self.payload, "mode": "translate"}, format="json")
         self.assertEqual(response.status_code, 400)
 
+    def test_rejects_non_object_request_bodies(self):
+        for payload in ([], ["unexpected"], "unexpected", 12):
+            with self.subTest(payload=payload), patch("api.views.requests.post") as post:
+                response = self.client.post(self.url, payload, format="json")
+            self.assertEqual(response.status_code, 400)
+            self.assertEqual(response.json(), {"error": "Request body must be a JSON object"})
+            post.assert_not_called()
+
     def test_rejects_unknown_style(self):
         with patch("api.views.requests.post") as post:
             response = self.client.post(self.url, {**self.payload, "style": "sarcastic"}, format="json")

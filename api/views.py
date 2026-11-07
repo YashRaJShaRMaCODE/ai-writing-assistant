@@ -28,9 +28,12 @@ def healthz(request):
 
 @api_view(["POST"])
 def rewrite_text(request):
-    text = request.data.get("text")
-    mode = request.data.get("mode", "rewrite")
-    style = request.data.get("style", "clear")
+    data = request.data
+    if not isinstance(data, dict):
+        return Response({"error": "Request body must be a JSON object"}, status=400)
+    text = data.get("text")
+    mode = data.get("mode", "rewrite")
+    style = data.get("style", "clear")
     if not isinstance(text, str) or not text.strip():
         return Response({"error": "Text is required"}, status=400)
     text = text.strip()
@@ -40,7 +43,7 @@ def rewrite_text(request):
         return Response({"error": "Mode must be rewrite or summarise"}, status=400)
     if not isinstance(style, str) or style not in STYLES:
         return Response({"error": "Style must be clear, warm, direct or formal"}, status=400)
-    if request.data.get("adult_confirmed") is not True or request.data.get("external_processing_confirmed") is not True:
+    if data.get("adult_confirmed") is not True or data.get("external_processing_confirmed") is not True:
         return Response({"error": "Confirm you are 18+ and agree to send text to Google Gemini"}, status=400)
 
     key = os.environ.get("GEMINI_API_KEY")
