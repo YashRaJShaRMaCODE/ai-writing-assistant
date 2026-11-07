@@ -14,6 +14,7 @@ The app has no accounts, user-level quotas, or billing controls yet. Its anonymo
 ## What it does
 
 - Rewrite text while preserving its intent, or summarise the key points.
+- Choose a clear, warm, direct, or formal output tone for either action.
 - Start from a sample draft, see word and character counts, and edit up to 5,000 characters.
 - Review results in place, copy or download them, or use one as the next draft.
 - Submit only after confirming you are 18+ and agreeing to send text to Google Gemini.
@@ -54,7 +55,7 @@ python manage.py collectstatic --noinput
 python manage.py runserver
 ```
 
-The API is available at `http://127.0.0.1:8000/api/rewrite/`; `/healthz/` reports whether the backend is reachable. It accepts JSON with a `text` field (up to 5,000 characters) and `mode` set to `rewrite` or `summarise`. Requests are limited to 10 per hour per anonymous IP. The Gemini key stays on the backend and is sent in the `x-goog-api-key` header.
+The API is available at `http://127.0.0.1:8000/api/rewrite/`; `/healthz/` reports supported modes and styles. It accepts JSON with a `text` field (up to 5,000 characters), `mode` set to `rewrite` or `summarise`, and optional `style` set to `clear`, `warm`, `direct`, or `formal`. Requests are limited to 10 per hour per anonymous IP. The Gemini key stays on the backend and is sent in the `x-goog-api-key` header.
 
 ### Frontend
 

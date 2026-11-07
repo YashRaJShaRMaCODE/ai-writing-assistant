@@ -21,7 +21,7 @@
 body { min-width: 0; min-height: 100vh; margin: 0; }
 button, textarea { font: inherit; }
 button { cursor: pointer; }
-button:focus-visible, textarea:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid #7e9dff; outline-offset: 3px; }
+button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #7e9dff; outline-offset: 3px; }
 
 .page-shell { width: min(1180px, calc(100% - 64px)); margin: 0 auto; }
 .topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
@@ -60,6 +60,9 @@ textarea::placeholder { color: #8695a8; }
 .sample-row button { min-height: 40px; padding: 0 11px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font-size: 11px; transition: border-color .16s ease, color .16s ease, transform .16s ease; }
 .sample-row button:hover { transform: translateY(-1px); border-color: #aab9cf; color: var(--blue); }
 .action-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 22px; }
+.action-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.style-control { display: grid; gap: 5px; color: var(--muted); font-size: 10px; font-weight: 600; }
+.style-control select { width: 122px; min-height: 44px; padding: 0 10px; border: 1px solid var(--line); border-radius: 9px; background: white; color: var(--ink); font: inherit; font-size: 12px; }
 .mode-switch { display: inline-flex; gap: 3px; padding: 4px; border: 1px solid var(--line); border-radius: 11px; background: #f6f8fa; }
 .mode-switch button { min-height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; }
 .mode-switch button { transition: background-color .18s ease, color .18s ease, box-shadow .18s ease; }

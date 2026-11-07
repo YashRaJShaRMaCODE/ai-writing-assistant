@@ -18,6 +18,7 @@ const API_URL = import.meta.env.VITE_API_URL?.trim().replace(/\/+$/, "")
 function App() {
   const [text, setText] = useState("");
   const [mode, setMode] = useState("rewrite");
+  const [style, setStyle] = useState("clear");
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,7 +39,7 @@ function App() {
 
     try {
       const response = await axios.post(`${API_URL}/api/rewrite/`, {
-        text, mode, adult_confirmed: adultConfirmed, external_processing_confirmed: processingConfirmed,
+        text, mode, style, adult_confirmed: adultConfirmed, external_processing_confirmed: processingConfirmed,
       });
       setResult(response.data.result);
     } catch (requestError) {
@@ -70,6 +71,12 @@ function App() {
 
   const updateMode = (value) => {
     setMode(value);
+    setResult("");
+    setError("");
+  };
+
+  const updateStyle = (value) => {
+    setStyle(value);
     setResult("");
     setError("");
   };
@@ -160,9 +167,20 @@ function App() {
 
           <div className="action-row">
             <div>
-              <div className="mode-switch" role="group" aria-label="Choose a writing action">
-                <button type="button" disabled={loading} aria-pressed={mode === "rewrite"} onClick={() => updateMode("rewrite")}>Rewrite</button>
-                <button type="button" disabled={loading} aria-pressed={mode === "summarise"} onClick={() => updateMode("summarise")}>Summarise</button>
+              <div className="action-controls">
+                <div className="mode-switch" role="group" aria-label="Choose a writing action">
+                  <button type="button" disabled={loading} aria-pressed={mode === "rewrite"} onClick={() => updateMode("rewrite")}>Rewrite</button>
+                  <button type="button" disabled={loading} aria-pressed={mode === "summarise"} onClick={() => updateMode("summarise")}>Summarise</button>
+                </div>
+                <label className="style-control">
+                  <span>Output tone</span>
+                  <select disabled={loading} value={style} onChange={(event) => updateStyle(event.target.value)}>
+                    <option value="clear">Clear</option>
+                    <option value="warm">Warm</option>
+                    <option value="direct">Direct</option>
+                    <option value="formal">Formal</option>
+                  </select>
+                </label>
               </div>
               <p className="mode-hint">
                 {mode === "rewrite" ? "Keep the idea. Make the wording clearer." : "Keep the key points. Leave out the extra detail."}
