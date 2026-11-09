@@ -18,6 +18,8 @@ The app has no accounts, user-level quotas, or billing controls yet. Its anonymo
 - Start from a sample draft, see word and character counts, and edit up to 5,000 characters.
 - Review results in place, copy or download them, or use one as the next draft.
 - Submit only after confirming you are 18+ and agreeing to send text to Google Gemini.
+- Show a clear retry message when the anonymous demo request limit is reached; the draft stays in the browser.
+- Stop waiting after 45 seconds and keep the draft visible if the service does not respond in time.
 - Keep provider API credentials on the backend; the browser receives only the service URL.
 - Protect the static frontend with a restrictive Content Security Policy and cache hashed assets for a year.
 

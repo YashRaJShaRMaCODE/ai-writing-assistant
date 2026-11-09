@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 
 const MAX_LENGTH = 5000;
+const REQUEST_TIMEOUT_MS = 45_000;
 const sampleDrafts = [
   {
     label: "Project update",
@@ -40,10 +41,22 @@ function App() {
     try {
       const response = await axios.post(`${API_URL}/api/rewrite/`, {
         text, mode, style, adult_confirmed: adultConfirmed, external_processing_confirmed: processingConfirmed,
-      });
+      }, { timeout: REQUEST_TIMEOUT_MS });
       setResult(response.data.result);
     } catch (requestError) {
-      setError(requestError.response?.data?.error || "Couldn’t reach the writing service. Try again.");
+      const response = axios.isAxiosError(requestError) ? requestError.response : undefined;
+      const code = axios.isAxiosError(requestError) ? requestError.code : undefined;
+      const serverMessage = response?.data?.error;
+      setError(
+        response?.status === 429
+          ? "You’ve reached the demo request limit. Try again later; your draft is still here."
+          : code === "ECONNABORTED" || code === "ETIMEDOUT"
+            ? "The request timed out. Your draft is still here; wait a moment before retrying."
+          : (typeof serverMessage === "string" && serverMessage) ||
+            (response
+              ? "The writing service returned an unexpected response. Try again."
+              : "Couldn’t reach the writing service. Check your connection and try again."),
+      );
     } finally {
       setLoading(false);
     }
