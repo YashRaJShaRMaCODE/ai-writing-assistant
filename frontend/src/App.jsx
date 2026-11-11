@@ -21,6 +21,7 @@ function App() {
   const [mode, setMode] = useState("rewrite");
   const [style, setStyle] = useState("clear");
   const [result, setResult] = useState("");
+  const [previousDraft, setPreviousDraft] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [adultConfirmed, setAdultConfirmed] = useState(false);
@@ -77,6 +78,7 @@ function App() {
 
   const updateText = (value) => {
     setText([...value].slice(0, MAX_LENGTH).join(""));
+    setPreviousDraft("");
     setResult("");
     setError("");
     setCopyStatus("");
@@ -95,8 +97,17 @@ function App() {
   };
 
   const useResultAsDraft = () => {
-    updateText(result);
+    setPreviousDraft(text);
+    setText([...result].slice(0, MAX_LENGTH).join(""));
+    setResult("");
+    setError("");
+    setCopyStatus("");
     textareaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    textareaRef.current?.focus({ preventScroll: true });
+  };
+
+  const restorePreviousDraft = () => {
+    updateText(previousDraft);
     textareaRef.current?.focus({ preventScroll: true });
   };
 
@@ -246,11 +257,16 @@ function App() {
               </div>
             )}
           </div>
-          {result && (
+          {(result || previousDraft) && (
             <div className="result-actions">
-              <button className="quiet-button" type="button" onClick={useResultAsDraft}>Use as next draft</button>
-              <button className="quiet-button" type="button" onClick={downloadResult}>Download .txt</button>
-              <button className="copy-button" type="button" onClick={copyResult}>{copyLabel}</button>
+              {previousDraft && <button className="quiet-button" type="button" onClick={restorePreviousDraft}>Restore previous draft</button>}
+              {result && (
+                <>
+                  <button className="quiet-button" type="button" onClick={useResultAsDraft}>Use as next draft</button>
+                  <button className="quiet-button" type="button" onClick={downloadResult}>Download .txt</button>
+                  <button className="copy-button" type="button" onClick={copyResult}>{copyLabel}</button>
+                </>
+              )}
             </div>
           )}
           <span className="visually-hidden" role="status" aria-live="polite">{copyStatus}</span>
