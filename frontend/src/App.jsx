@@ -4,6 +4,7 @@ import axios from "axios";
 const MAX_LENGTH = 5000;
 const REQUEST_TIMEOUT_MS = 45_000;
 const DRAFT_STORAGE_KEY = "clear-writing:draft:v1";
+const PREVIOUS_DRAFT_STORAGE_KEY = "clear-writing:previous-draft:v1";
 const sampleDrafts = [
   {
     label: "Project update",
@@ -17,18 +18,18 @@ const sampleDrafts = [
 const API_URL = import.meta.env.VITE_API_URL?.trim().replace(/\/+$/, "")
   || (import.meta.env.DEV ? "http://127.0.0.1:8000" : "");
 
-function readSessionDraft() {
+function readSessionDraft(key = DRAFT_STORAGE_KEY) {
   try {
-    return [...(sessionStorage.getItem(DRAFT_STORAGE_KEY) || "")].slice(0, MAX_LENGTH).join("");
+    return [...(sessionStorage.getItem(key) || "")].slice(0, MAX_LENGTH).join("");
   } catch {
     return "";
   }
 }
 
-function persistSessionDraft(value) {
+function persistSessionDraft(value, key = DRAFT_STORAGE_KEY) {
   try {
-    if (value) sessionStorage.setItem(DRAFT_STORAGE_KEY, value);
-    else sessionStorage.removeItem(DRAFT_STORAGE_KEY);
+    if (value) sessionStorage.setItem(key, value);
+    else sessionStorage.removeItem(key);
   } catch {
     // Draft editing remains available when browser storage is disabled or full.
   }
@@ -40,7 +41,7 @@ function App() {
   const [style, setStyle] = useState("clear");
   const [result, setResult] = useState("");
   const [comparisonOpen, setComparisonOpen] = useState(false);
-  const [previousDraft, setPreviousDraft] = useState("");
+  const [previousDraft, setPreviousDraft] = useState(() => readSessionDraft(PREVIOUS_DRAFT_STORAGE_KEY));
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [adultConfirmed, setAdultConfirmed] = useState(false);
@@ -101,6 +102,7 @@ function App() {
     setText(nextText);
     persistSessionDraft(nextText);
     setPreviousDraft("");
+    persistSessionDraft("", PREVIOUS_DRAFT_STORAGE_KEY);
     setResult("");
     setComparisonOpen(false);
     setError("");
@@ -124,6 +126,7 @@ function App() {
   const useResultAsDraft = () => {
     const nextText = [...result].slice(0, MAX_LENGTH).join("");
     setPreviousDraft(text);
+    persistSessionDraft(text, PREVIOUS_DRAFT_STORAGE_KEY);
     setText(nextText);
     persistSessionDraft(nextText);
     setResult("");

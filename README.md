@@ -19,7 +19,7 @@ The app has no accounts, user-level quotas, or billing controls yet. Its anonymo
 - Keep the current draft in this browser tab across reloads; Clear draft removes the saved copy.
 - Review results in place, copy or download them, or use one as the next draft.
 - Compare a rewrite or summary with the original draft, including the word-count change, before you use it.
-- Restore the original draft after using a result as the next draft; all draft text stays in the browser.
+- Restore the original draft after using a result as the next draft, including after a reload in the same tab; both drafts stay in session storage.
 - Submit only after confirming you are 18+ and agreeing to send text to Google Gemini.
 - Show a clear retry message when the anonymous demo request limit is reached; the draft stays in the browser.
 - Stop waiting after 45 seconds and keep the draft visible if the service does not respond in time.
