@@ -3,6 +3,7 @@ import axios from "axios";
 
 const MAX_LENGTH = 5000;
 const REQUEST_TIMEOUT_MS = 45_000;
+const DRAFT_STORAGE_KEY = "clear-writing:draft:v1";
 const sampleDrafts = [
   {
     label: "Project update",
@@ -16,8 +17,25 @@ const sampleDrafts = [
 const API_URL = import.meta.env.VITE_API_URL?.trim().replace(/\/+$/, "")
   || (import.meta.env.DEV ? "http://127.0.0.1:8000" : "");
 
+function readSessionDraft() {
+  try {
+    return [...(sessionStorage.getItem(DRAFT_STORAGE_KEY) || "")].slice(0, MAX_LENGTH).join("");
+  } catch {
+    return "";
+  }
+}
+
+function persistSessionDraft(value) {
+  try {
+    if (value) sessionStorage.setItem(DRAFT_STORAGE_KEY, value);
+    else sessionStorage.removeItem(DRAFT_STORAGE_KEY);
+  } catch {
+    // Draft editing remains available when browser storage is disabled or full.
+  }
+}
+
 function App() {
-  const [text, setText] = useState("");
+  const [text, setText] = useState(readSessionDraft);
   const [mode, setMode] = useState("rewrite");
   const [style, setStyle] = useState("clear");
   const [result, setResult] = useState("");
@@ -77,7 +95,9 @@ function App() {
   };
 
   const updateText = (value) => {
-    setText([...value].slice(0, MAX_LENGTH).join(""));
+    const nextText = [...value].slice(0, MAX_LENGTH).join("");
+    setText(nextText);
+    persistSessionDraft(nextText);
     setPreviousDraft("");
     setResult("");
     setError("");
@@ -97,8 +117,10 @@ function App() {
   };
 
   const useResultAsDraft = () => {
+    const nextText = [...result].slice(0, MAX_LENGTH).join("");
     setPreviousDraft(text);
-    setText([...result].slice(0, MAX_LENGTH).join(""));
+    setText(nextText);
+    persistSessionDraft(nextText);
     setResult("");
     setError("");
     setCopyStatus("");
@@ -226,7 +248,7 @@ function App() {
             {!adultConfirmed ? "Confirm you’re 18 or older to continue." : !processingConfirmed ? "Agree to send the draft to Gemini before continuing." : "Your draft is sent only when you choose Rewrite or Summarise."}
           </p>
           <p className="privacy-note" id="privacy-note">
-            Your text is sent to Google Gemini for processing. Don’t include sensitive or private details. On unpaid API use, Google may use prompts and responses to improve its services and human reviewers may process them. <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noreferrer">Read Gemini’s terms</a>.
+            Your draft is kept in this browser tab so it can survive a reload; choose Clear draft to remove it. Text is sent to Google Gemini only after you choose an action and confirm processing. Don’t include sensitive or private details. On unpaid API use, Google may use prompts and responses to improve its services and human reviewers may process them. <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noreferrer">Read Gemini’s terms</a>.
           </p>
           <label className="consent-row">
             <input type="checkbox" disabled={loading} checked={adultConfirmed} onChange={(event) => setAdultConfirmed(event.target.checked)} />
@@ -272,7 +294,7 @@ function App() {
           <span className="visually-hidden" role="status" aria-live="polite">{copyStatus}</span>
           <div className="result-footer">
             <span>AI-generated. Check that it still says what you mean.</span>
-            <span>Nothing is saved by this app.</span>
+            <span>Draft stays in this tab only.</span>
           </div>
         </section>
       </section>

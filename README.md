@@ -16,6 +16,7 @@ The app has no accounts, user-level quotas, or billing controls yet. Its anonymo
 - Rewrite text while preserving its intent, or summarise the key points.
 - Choose a clear, warm, direct, or formal output tone for either action.
 - Start from a sample draft, see word and character counts, and edit up to 5,000 characters.
+- Keep the current draft in this browser tab across reloads; Clear draft removes the saved copy.
 - Review results in place, copy or download them, or use one as the next draft.
 - Restore the original draft after using a result as the next draft; all draft text stays in the browser.
 - Submit only after confirming you are 18+ and agreeing to send text to Google Gemini.
@@ -79,7 +80,7 @@ npm run build
 
 ## Production and privacy
 
-The browser sends text to the backend only after the user selects **Rewrite** or **Summarise** and confirms both consent checkboxes. The backend forwards it to Google Gemini. The application does not store submitted text, but Google’s data-use terms differ between unpaid and paid API usage; on unpaid API usage, prompts and responses may be used to improve Google products and may be reviewed by people. Read the [Gemini API terms](https://ai.google.dev/gemini-api/terms) before sending work content. Never submit sensitive, confidential, or personal information.
+The browser sends text to the backend only after the user selects **Rewrite** or **Summarise** and confirms both consent checkboxes. The current draft is held in this tab's `sessionStorage` so it can survive a reload; **Clear draft** removes it. The server does not store submitted text and forwards it to Google Gemini. Google’s data-use terms differ between unpaid and paid API usage; on unpaid API usage, prompts and responses may be used to improve Google products and may be reviewed by people. Read the [Gemini API terms](https://ai.google.dev/gemini-api/terms) before sending work content. Never submit sensitive, confidential, or personal information.
 
 The live frontend is a Render static site and the API is a separate Render web service. `render.yaml` documents both. Production settings:
 
