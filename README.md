@@ -17,6 +17,7 @@ The app has no accounts, user-level quotas, or billing controls yet. Its anonymo
 - Choose a clear, warm, direct, or formal output tone for either action.
 - Start from a sample draft, see word and character counts, and edit up to 5,000 characters.
 - Keep the current draft in this browser tab across reloads; Clear draft removes the saved copy.
+- Show whether the draft is saved in this tab and warn clearly when browser storage is unavailable.
 - Review results in place, copy or download them, or use one as the next draft.
 - Compare a rewrite or summary with the original draft, including the word-count change, before you use it.
 - Restore the original draft after using a result as the next draft, including after a reload in the same tab; both drafts stay in session storage.

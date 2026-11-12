@@ -55,6 +55,9 @@ button:focus-visible, textarea:focus-visible, input:focus-visible, select:focus-
 textarea { display: block; width: 100%; min-height: 250px; resize: vertical; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: #fcfdff; color: var(--ink); font-size: 15px; line-height: 1.7; }
 textarea::placeholder { color: #8695a8; }
 .editor-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; padding: 9px 2px 0; color: var(--muted); font-family: ui-monospace, monospace; font-size: 11px; }
+.draft-storage-status::before { display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: #44a77a; content: ''; }
+.draft-storage-status.is-unavailable { color: #9a4b35; }
+.draft-storage-status.is-unavailable::before { background: #b75f46; }
 .sample-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; color: var(--muted); font-size: 11px; }
 .sample-row > span { margin-right: 2px; }
 .sample-row button { min-height: 40px; padding: 0 11px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font-size: 11px; transition: border-color .16s ease, color .16s ease, transform .16s ease; }

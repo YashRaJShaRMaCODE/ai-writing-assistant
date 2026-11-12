@@ -30,13 +30,21 @@ function persistSessionDraft(value, key = DRAFT_STORAGE_KEY) {
   try {
     if (value) sessionStorage.setItem(key, value);
     else sessionStorage.removeItem(key);
+    return true;
   } catch {
-    // Draft editing remains available when browser storage is disabled or full.
+    return false;
   }
 }
 
 function App() {
   const [text, setText] = useState(readSessionDraft);
+  const [draftStorageStatus, setDraftStorageStatus] = useState(() => {
+    try {
+      return sessionStorage.getItem(DRAFT_STORAGE_KEY) ? "saved" : "ready";
+    } catch {
+      return "unavailable";
+    }
+  });
   const [mode, setMode] = useState("rewrite");
   const [style, setStyle] = useState("clear");
   const [result, setResult] = useState("");
@@ -100,9 +108,10 @@ function App() {
   const updateText = (value) => {
     const nextText = [...value].slice(0, MAX_LENGTH).join("");
     setText(nextText);
-    persistSessionDraft(nextText);
+    const draftSaved = persistSessionDraft(nextText);
+    const previousCleared = persistSessionDraft("", PREVIOUS_DRAFT_STORAGE_KEY);
+    setDraftStorageStatus(draftSaved && previousCleared ? (nextText ? "saved" : "ready") : "unavailable");
     setPreviousDraft("");
-    persistSessionDraft("", PREVIOUS_DRAFT_STORAGE_KEY);
     setResult("");
     setComparisonOpen(false);
     setError("");
@@ -126,9 +135,10 @@ function App() {
   const useResultAsDraft = () => {
     const nextText = [...result].slice(0, MAX_LENGTH).join("");
     setPreviousDraft(text);
-    persistSessionDraft(text, PREVIOUS_DRAFT_STORAGE_KEY);
+    const previousSaved = persistSessionDraft(text, PREVIOUS_DRAFT_STORAGE_KEY);
     setText(nextText);
-    persistSessionDraft(nextText);
+    const draftSaved = persistSessionDraft(nextText);
+    setDraftStorageStatus(previousSaved && draftSaved ? "saved" : "unavailable");
     setResult("");
     setComparisonOpen(false);
     setError("");
@@ -206,6 +216,9 @@ function App() {
           <div className="editor-meta">
             <span>{wordCount.toLocaleString()} {wordCount === 1 ? "word" : "words"}</span>
             <span id="character-count">{characterCount.toLocaleString()} / {MAX_LENGTH.toLocaleString()} characters</span>
+            <span className={`draft-storage-status${draftStorageStatus === "unavailable" ? " is-unavailable" : ""}`}>
+              {draftStorageStatus === "unavailable" ? "Autosave unavailable · keep this tab open" : text ? "Saved in this tab" : "Autosaves in this tab"}
+            </span>
             <span id="keyboard-hint">⌘ / Ctrl + Enter to run</span>
           </div>
 
