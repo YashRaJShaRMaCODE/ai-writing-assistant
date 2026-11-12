@@ -39,6 +39,7 @@ function App() {
   const [mode, setMode] = useState("rewrite");
   const [style, setStyle] = useState("clear");
   const [result, setResult] = useState("");
+  const [comparisonOpen, setComparisonOpen] = useState(false);
   const [previousDraft, setPreviousDraft] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,7 @@ function App() {
     setLoading(true);
     setError("");
     setResult("");
+    setComparisonOpen(false);
     setCopyStatus("");
 
     try {
@@ -100,6 +102,7 @@ function App() {
     persistSessionDraft(nextText);
     setPreviousDraft("");
     setResult("");
+    setComparisonOpen(false);
     setError("");
     setCopyStatus("");
   };
@@ -107,12 +110,14 @@ function App() {
   const updateMode = (value) => {
     setMode(value);
     setResult("");
+    setComparisonOpen(false);
     setError("");
   };
 
   const updateStyle = (value) => {
     setStyle(value);
     setResult("");
+    setComparisonOpen(false);
     setError("");
   };
 
@@ -122,6 +127,7 @@ function App() {
     setText(nextText);
     persistSessionDraft(nextText);
     setResult("");
+    setComparisonOpen(false);
     setError("");
     setCopyStatus("");
     textareaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -270,7 +276,12 @@ function App() {
           </div>
           <div className={`result-body${result ? " has-result" : ""}`} aria-live="polite">
             {result ? (
-              <p>{result}</p>
+              comparisonOpen ? (
+                <div className="comparison-view" id="draft-comparison" aria-label="Compare your draft with the result">
+                  <article><h3>Original · {wordCount.toLocaleString()} words</h3><p>{text}</p></article>
+                  <article><h3>{mode === "rewrite" ? "Rewrite" : "Summary"} · {result.trim().split(/\s+/).length.toLocaleString()} words</h3><p>{result}</p></article>
+                </div>
+              ) : <p>{result}</p>
             ) : (
               <div className="empty-state">
                 <span className="empty-mark" aria-hidden="true">Aa</span>
@@ -284,6 +295,7 @@ function App() {
               {previousDraft && <button className="quiet-button" type="button" onClick={restorePreviousDraft}>Restore previous draft</button>}
               {result && (
                 <>
+                  <button className="quiet-button" type="button" aria-expanded={comparisonOpen} onClick={() => setComparisonOpen((open) => !open)}>{comparisonOpen ? "Back to result" : "Compare with draft"}</button>
                   <button className="quiet-button" type="button" onClick={useResultAsDraft}>Use as next draft</button>
                   <button className="quiet-button" type="button" onClick={downloadResult}>Download .txt</button>
                   <button className="copy-button" type="button" onClick={copyResult}>{copyLabel}</button>

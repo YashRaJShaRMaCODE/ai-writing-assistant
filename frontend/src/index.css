@@ -90,6 +90,10 @@ textarea::placeholder { color: #8695a8; }
 .result-body.has-result { align-items: flex-start; border-style: solid; }
 .result-body.has-result { animation: result-enter .3s ease both; }
 .result-body > p { margin: 0; color: var(--ink); font-family: Georgia, serif; font-size: 21px; line-height: 1.58; white-space: pre-wrap; overflow-wrap: anywhere; }
+.comparison-view { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.comparison-view article { min-width: 0; }
+.comparison-view h3 { margin: 0 0 9px; color: var(--muted); font: 600 10px/1.4 ui-monospace, monospace; letter-spacing: .04em; text-transform: uppercase; }
+.comparison-view p { margin: 0; color: var(--ink); font-size: 13px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
 .empty-state { align-self: center; max-width: 250px; margin: auto; text-align: center; }
 .empty-mark { display: grid; width: 48px; height: 48px; place-items: center; margin: 0 auto 15px; border-radius: 14px; background: #e9efff; color: var(--blue); font-family: Georgia, serif; font-size: 22px; }
 .empty-state h3 { margin: 0; color: var(--ink); font-family: Georgia, serif; font-size: 22px; font-weight: 400; line-height: 1.2; }
@@ -125,6 +129,7 @@ textarea::placeholder { color: #8695a8; }
   .primary-button { width: 100%; }
   .result-panel { min-height: 360px; }
   .result-body { min-height: 220px; padding: 17px; }
+  .comparison-view { grid-template-columns: 1fr; gap: 16px; }
   .result-actions { justify-content: stretch; }
   .result-actions button { flex: 1 1 120px; }
   .result-footer, .page-footer { flex-direction: column; }

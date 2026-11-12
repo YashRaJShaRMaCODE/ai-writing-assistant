@@ -18,6 +18,7 @@ The app has no accounts, user-level quotas, or billing controls yet. Its anonymo
 - Start from a sample draft, see word and character counts, and edit up to 5,000 characters.
 - Keep the current draft in this browser tab across reloads; Clear draft removes the saved copy.
 - Review results in place, copy or download them, or use one as the next draft.
+- Compare a rewrite or summary with the original draft, including the word-count change, before you use it.
 - Restore the original draft after using a result as the next draft; all draft text stays in the browser.
 - Submit only after confirming you are 18+ and agreeing to send text to Google Gemini.
 - Show a clear retry message when the anonymous demo request limit is reached; the draft stays in the browser.
