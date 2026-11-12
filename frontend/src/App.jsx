@@ -54,7 +54,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [adultConfirmed, setAdultConfirmed] = useState(false);
   const [processingConfirmed, setProcessingConfirmed] = useState(false);
-  const [copyLabel, setCopyLabel] = useState("Copy result");
+  const [copyLabel, setCopyLabel] = useState("Share result");
   const [copyStatus, setCopyStatus] = useState("");
   const textareaRef = useRef(null);
   const characterCount = [...text].length;
@@ -93,15 +93,26 @@ function App() {
   };
 
   const copyResult = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: document.title, text: result });
+        setCopyLabel("Shared");
+        setCopyStatus("Result shared.");
+        window.setTimeout(() => setCopyLabel("Share result"), 1600);
+        return;
+      } catch (shareError) {
+        if (shareError?.name === "AbortError") return;
+      }
+    }
     try {
       await navigator.clipboard.writeText(result);
       setCopyLabel("Copied");
       setCopyStatus("Copied to clipboard.");
-      window.setTimeout(() => setCopyLabel("Copy result"), 1600);
+      window.setTimeout(() => setCopyLabel("Share result"), 1600);
     } catch {
-      setCopyLabel("Copy unavailable");
-      setCopyStatus("Clipboard unavailable. Select and copy the result manually.");
-      window.setTimeout(() => setCopyLabel("Copy result"), 1600);
+      setCopyLabel("Share unavailable");
+      setCopyStatus("Sharing and clipboard are unavailable. Select and copy the result manually.");
+      window.setTimeout(() => setCopyLabel("Share result"), 1600);
     }
   };
 
